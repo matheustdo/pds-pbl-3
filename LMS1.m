@@ -11,9 +11,12 @@ function LMS1(x, d, t, mu, M)
         j=x(i:-1:i-M+1);
         y(i)=((wi)*(j)');
     end
+    valorSNR = mag2db(rssq(d(:))/rssq(e(:)));
+    textoT = strcat('Algoritmo LMS | SNR = ',num2str(valorSNR));
+    figure('Name',textoT,'NumberTitle','off');
     subplot(221),plot(t,d),title('Sinal desejado'),
     subplot(222),plot(t,x),title('Sinal de entrada ruidoso'),
     subplot(223),plot(t,e),title('Erro'),
     subplot(224),plot(t,y),title('Sinal obtido');
-
+    
 end
