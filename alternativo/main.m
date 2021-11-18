@@ -12,6 +12,7 @@ ordem = 30;
 valorSNR = mag2db(rssq(d(:))/rssq(ruido(:)));
 % valorSNR = snr(d,ruido);
 LMS1(x,d,t,mu,ordem,valorSNR);
+
 ha = adaptfilt.lms(ordem,mu);
 [y,e_M] = filter(ha,x,d);
 textoT = strcat('Algoritmo LMS do MATLAB | SNR = ',num2str(valorSNR));
@@ -20,6 +21,19 @@ subplot(221),plot(t,d),title('Sinal desejado'),
 subplot(222),plot(t,x),title('Sinal de entrada ruidoso'),
 subplot(223),plot(t,e_M),title('Erro'),
 subplot(224),plot(t,y),title('Sinal obtido');
+
+% rls = dsp.RLSFilter (ordem, 'ForgettingFactor' , 0.98);
+% [y_RLS, e_RLS] = rls(x', d');
+ffR = 1;
+rls = adaptfilt.rls(ordem,ffR);
+[y_RLS, e_RLS] = filter(rls,x,d);
+textoT2 = strcat('Algoritmo RLS do MATLAB | SNR = ',num2str(valorSNR));
+figure('Name',textoT2,'NumberTitle','off');
+subplot(221),plot(t,d),title('Sinal desejado'),
+subplot(222),plot(t,x),title('Sinal de entrada ruidoso'),
+subplot(223),plot(t,e_RLS),title('Erro'),
+subplot(224),plot(t,y_RLS),title('Sinal obtido');
+
 
 
 
