@@ -1,22 +1,28 @@
-function LMS1(x, d, t, mu, M, valorSNR)
+function LMS1(x, d, t, M)
+    mu = 0.005;
     N=numel(d);
-    wi=zeros(1,M);
-    e=[];
-    for i=M:N
-        e(i)=d(i)-wi*x(i:-1:i-M+1)';
-        wi = wi+2*mu*e(i)*x(i:-1:i-M+1);
+    ha = zeros(N,1);
+    e = zeros(N,1);
+    w = zeros(M,1);
+    U = zeros(M,1);
+
+    % Step 1: Filtragem
+    for i=1:N
+        U = [d(i) 
+        U(1:(M-1))];
+        x_n = x(i);
+        y = (w'*U);
+        ha(i) = (ha(i)+y);
+        % Step 2: Estimando o erro
+        E_LMS = (x_n-y);
+        e(i) = e(i)+E_LMS;
+        % Step 3: Adaptação
+        w = (w+(mu*E_LMS*U));
     end
-    y=zeros(N,1);
-    for i=M:N
-        j=x(i:-1:i-M+1);
-        y(i)=((wi)*(j)');
-    end
-    % valorSNR = mag2db(rssq(d(:))/rssq(e(:)));
-    textoT = strcat('Algoritmo LMS | SNR = ',num2str(valorSNR));
-    figure('Name',textoT,'NumberTitle','off');
-    subplot(221),plot(t,d),title('Sinal desejado'),
-    subplot(222),plot(t,x),title('Sinal de entrada ruidoso'),
-    subplot(223),plot(t,e),title('Erro'),
-    subplot(224),plot(t,y),title('Sinal obtido');
-    
+    figure(4);
+    subplot(221),plot(t,d),title('Sinal desejado'), axis([0 1000 -3 3]);
+    subplot(222),plot(t,x),title('Sinal de entrada ruidoso'), axis([0 1000 -3 3]);
+    subplot(223),plot(t,e),title('Erro'), axis([0 1000 -3 3]);
+    subplot(224),plot(t,ha),title('Sinal obtido');
+    axis([0 1000 -3 3]);
 end
