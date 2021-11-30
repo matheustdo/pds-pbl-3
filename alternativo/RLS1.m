@@ -1,4 +1,4 @@
-function RLS1(x, d, t, M)
+function [ha,e,w] = RLS1(x, d, t, M)
     delta = 0.001;
     lambda = 1;
     N = numel(d);
@@ -25,11 +25,13 @@ function RLS1(x, d, t, M)
         %Step 5: atualização da correlação
         P = (((1/(lambda))*P)-((1/lambda)*g*u'*P));
     end
-    
-    figure(5);
-    subplot(221),plot(t,d),title('Sinal estimado'), axis([0 1000 -3 3]);
-    subplot(222),plot(t,x),title('Sinal de entrada ruidoso'), axis([0 1000 -3 3]);
-    subplot(223),plot(t,e),title('Erro'), axis([0 1000 -3 3]);
+    ruido = x - d;
+    valorSNR = mag2db(rssq(d(:))/rssq(ruido(:)));
+    textoT2 = strcat('Algoritmo RLS | SNR = ',num2str(valorSNR));
+    figure('Name',textoT2,'NumberTitle','off');
+    subplot(221),plot(t,d),title('Sinal estimado');
+    subplot(222),plot(t,x),title('Sinal de entrada ruidoso');
+    subplot(223),plot(t,e),title('Erro');
     subplot(224),plot(t,ha),title('Sinal obtido');
-    axis([0 1000 -3 3]);
+    %axis([0 1000 -3 3]);
 end

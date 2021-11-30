@@ -1,4 +1,4 @@
-function LMS1(x, d, t, M)
+function [ha,e,w] = LMS1(x, d, t, M)
     mu = 0.005;
     N=numel(d);
     ha = zeros(N,1);
@@ -19,10 +19,13 @@ function LMS1(x, d, t, M)
         % Step 3: Adaptação
         w = (w+(mu*E_LMS*U));
     end
-    figure(4);
-    subplot(221),plot(t,d),title('Sinal desejado'), axis([0 1000 -3 3]);
-    subplot(222),plot(t,x),title('Sinal de entrada ruidoso'), axis([0 1000 -3 3]);
-    subplot(223),plot(t,e),title('Erro'), axis([0 1000 -3 3]);
+    ruido = x - d;
+    valorSNR = mag2db(rssq(d(:))/rssq(ruido(:)));
+    textoT2 = strcat('Algoritmo LMS | SNR = ',num2str(valorSNR));
+    figure('Name',textoT2,'NumberTitle','off');
+    subplot(221),plot(t,d),title('Sinal desejado');
+    subplot(222),plot(t,x),title('Sinal de entrada ruidoso');
+    subplot(223),plot(t,e),title('Erro');
     subplot(224),plot(t,ha),title('Sinal obtido');
-    axis([0 1000 -3 3]);
+    %axis([0 1000 -3 3]);
 end
